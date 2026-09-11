@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  
+  <meta charset="UTF-8">
+  <title>เครื่องคำนวณ Echoes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+:root{--pink:#ff6fae;--pink2:#ffb7d8;--ink:#493544;--muted:#987b8c;--panel:#fff;--soft:#fff3f8;--line:#f5d6e5}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#fff7fb 0%,#ffeaf4 100%);font-family:'Sarabun',sans-serif;color:var(--ink)}
+.banner{width:min(100% - 28px,1100px);margin:18px auto 0}.banner img{width:100%;max-height:250px;object-fit:cover;border-radius:24px;box-shadow:0 12px 30px #d78ca52b}
+.container{max-width:1080px}.card{border:1px solid #fff;border-radius:26px;box-shadow:0 12px 40px #c879a51c;background:rgba(255,255,255,.94);overflow:hidden}.card-body{padding:clamp(20px,4vw,42px)}
+.card-title{color:#ed5798;font-weight:700;text-align:center;font-size:clamp(24px,4vw,34px);line-height:1.35;margin-bottom:28px}.form-label{font-weight:600;color:#755568;margin-bottom:8px}.form-control,.form-select{border:1px solid var(--line);border-radius:14px;padding:12px 15px;background:#fff;color:var(--ink)}.form-control:focus,.form-select:focus{border-color:var(--pink);box-shadow:0 0 0 4px #ff8fc729}
+.btn{border-radius:14px;font-weight:600;padding:11px 18px;transition:.2s}.btn-primary{background:linear-gradient(135deg,#ff72b2,#ffacd1);border:0;color:white;box-shadow:0 7px 16px #ff72b22b}.btn-primary:hover{background:linear-gradient(135deg,#f85b9f,#ff94c5);transform:translateY(-1px)}.btn-secondary{background:#ffe2ef;border:1px solid #ffd0e3;color:#a34370}.btn-secondary:hover{background:#ffd3e6;color:#8d315d}
+#discountTable{background:#fff8fc;border:1px solid var(--line);border-radius:18px;padding:16px}#discountTable h5{color:#d94c8c;font-weight:700}.table{margin-bottom:0;border-color:var(--line);vertical-align:middle}.table thead{background:#ffe0ee;color:#8e3c61}.table th,.table td{padding:12px 10px}.table tbody tr:hover{background:#fff7fb}
+#resultBox{max-height:0;overflow:hidden;opacity:0;transform:translateY(-10px);transition:.35s ease;margin-top:22px}#resultBox.show{max-height:900px;opacity:1;transform:none;overflow:visible}#result{background:linear-gradient(135deg,#fff0f7,#fffafd)!important;border:1px solid #ffd2e5!important;border-radius:20px!important;padding:20px!important;box-shadow:inset 0 0 0 1px #fff}.result-title{color:#d94c8c;font-weight:700}
+#skinGallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.skin-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #f6dce8;border-radius:18px;padding:12px;box-shadow:0 5px 16px #c879a512;margin:0;min-width:0}.skin-card img{width:72px;height:88px;object-fit:cover;border-radius:12px;background:#fff2f8}.skin-info{flex:1;min-width:0}.skin-name{font-weight:700;font-size:15px;line-height:1.35}.skin-price{color:#b37b96;font-size:14px;margin-top:4px}.skin-qty{display:flex;align-items:center;justify-content:center;gap:7px;margin:0}.skin-qty button{width:30px;height:30px;padding:0;border:0;border-radius:10px;background:#ff8abd;color:white;font-size:19px}.skin-qty span{min-width:18px;text-align:center;font-weight:700}.skin-desc{color:#b14b7d;font-weight:500;text-align:center}.pagination{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:20px}.pagination button{border:1px solid #f0c8da;background:#fff;color:#a34370;border-radius:10px;padding:7px 12px}.pagination button.active{background:#ff7eb9;color:#fff;border-color:#ff7eb9}
+#skinResult{background:linear-gradient(135deg,#fff0f7,#fffafd);border:1px solid #ffd2e5;border-radius:20px;padding:18px;margin-top:18px}.price-note{font-size:12px;color:#b07b95;text-align:center;margin-top:8px}.footer-credit{text-align:center;margin-top:26px;padding:20px;color:#a34370;background:#ffeaf4;border-top:1px solid #ffd5e6}
+.dark-mode{background:linear-gradient(180deg,#211923,#382633);color:#f9dbea}.dark-mode .card,.dark-mode .skin-card{background:#3b2b38;color:#f9dbea;border-color:#5a4051}.dark-mode .form-label,.dark-mode .skin-price{color:#e8b6d0}.dark-mode .form-control,.dark-mode .form-select,.dark-mode #discountTable,.dark-mode .table,.dark-mode #result,.dark-mode #skinResult{background:#4b3545!important;color:#ffe5f2;border-color:#765066!important}.dark-mode .table thead{background:#d978a8;color:#321f2a}.dark-mode .table tbody tr:hover{background:#563c4d}.dark-mode .footer-credit{background:#3b2b38;color:#f0a9cc;border-color:#765066}.dark-mode .pagination button{background:#4b3545;color:#ffe5f2;border-color:#765066}
+.dark-toggle,.top-btn{position:fixed;right:20px;width:46px;height:46px;border:0;border-radius:50%;background:linear-gradient(135deg,#ff72b2,#ffacd1);color:white;box-shadow:0 6px 18px #0002;z-index:999;cursor:pointer}.dark-toggle{top:20px}.top-btn{bottom:90px;opacity:0;pointer-events:none;transition:.25s}.top-btn.show{opacity:1;pointer-events:auto}.floating-menu{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:9px;z-index:998}.floating-menu a,.floating-menu button{background:linear-gradient(135deg,#ff72b2,#ffacd1);color:white;border:0;border-radius:30px;padding:10px 16px;font-size:14px;text-decoration:none;box-shadow:0 6px 18px #0002}.floating-menu a:hover{color:white;transform:translateY(-1px)}
+@media(max-width:576px){.banner{width:calc(100% - 20px);margin-top:10px}.card-body{padding:18px}.skin-card{padding:10px}.floating-menu{right:12px;bottom:12px}.dark-toggle{right:12px;top:12px}.top-btn{right:12px;bottom:92px}#skinGallery{grid-template-columns:1fr}.table{font-size:13px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+  
+</head>
+<body>
+
+
+<div class="banner">
+  <img src="banner.png">
+</div>
+
+  
+<div class="container py-2">
+  <div class="card shadow">
+    <div class="card-body">
+      <h2 class="card-title">
+🎀 คำนวณ Echoes 🎀  
+<br>
+💗 by sayluvyaa 💗
+</h2>
+      <div class="mb-3">
+        <label for="modeSelect" class="form-label">เลือกโหมดคำนวณ</label>
+        <select id="modeSelect" class="form-select">
+          <option value="buttons">คำนวณจากจำนวนกระดุม</option>
+          <option value="topup">คำนวณจากยอดเติมเสียงสะท้อน</option>
+          <option value="budget">คำนวณจากงบประมาณ</option>
+          <option value="discount">คำนวณแบบใช้ส่วนลด</option>
+          <option value="gacha">คำนวณลูกกาชา</option>
+
+        </select>
+      </div>
+
+      <div class="mb-3" id="generalInput">
+  <label for="echoesInput" class="form-label">จำนวนที่ต้องการ (กระดุม / ยอดเติม / งบ)</label>
+  <input type="number" id="echoesInput" class="form-control" placeholder="เช่น 833 หรือ 1759 หรือ 1000">
+</div>
+      <!-- ===== โหมดกาชา ===== -->
+<div id="gachaInput" style="display:none;">
+
+ <div class="mb-3">
+  <label class="form-label">จำนวนแพ็กพิเศษ</label>
+  <input type="number" id="specialPack" class="form-control"
+  placeholder="576 Echoes ได้ 10 ลูก เช่น 1">
+</div>
+
+<div class="mb-3">
+  <label class="form-label">จำนวนลูกปกติที่ต้องการ</label>
+  <input type="number" id="normalBalls" class="form-control"
+  placeholder="ลูกละ 96 Echoes เช่น 10">
+</div>
+
+</div>
+
+<!-- ตารางเลือกแพ็กและส่วนลด -->
+<div id="discountTable" class="mt-3" style="display:none;">
+  <h5>เลือกแพ็กและส่วนลด</h5>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>แพ็ก</th>
+        <th>ส่วนลด</th>
+      </tr>
+    </thead>
+    <tbody id="discountRows"></tbody>
+  </table>
+  <button class="btn btn-secondary mt-1 mb-3" onclick="addDiscountRow()">➕ เพิ่มแถว</button>
+</div>
+
+<button class="btn btn-primary w-100" onclick="calculate()">คำนวณ</button>
+
+   <div class="mt-4">
+
+<div id="resultBox">
+
+  <h5 class="result-title">✨ ผลลัพธ์การคำนวณ</h5>
+
+  <div id="result" class="bg-white p-3 border rounded"></div>
+
+</div>
+</div>
+
+  <div class="container mt-4">
+
+<h4 class="text-center">🛍 Skin Gallery</h4>
+<p class="text-center skin-desc">
+เลือกสกินที่ต้องการ ระบบจะรวม Echoes ให้แล้วคำนวณสูตรเติมที่คุ้มที่สุด
+</p>
+
+<!-- 🔍 ช่องค้นหา -->
+<div class="mb-3">
+<input 
+type="text"
+id="skinSearch"
+class="form-control"
+placeholder="🔍 ค้นหา Skin..."
+onkeyup="searchSkin()">
+</div>
+
+<div id="skinGallery"></div>
+
+    <div class="pagination">
+<button onclick="changePage(-1)">ก่อนหน้า</button>
+
+<span id="pageNumbers"></span>
+
+<button onclick="changePage(1)">ถัดไป</button>
+</div>
+    
+<div class="text-center mt-2">
+<button class="btn btn-secondary" onclick="resetSkin()">
+ล้าง Skin
+</button>
+</div>
+
+<div id="skinResult" class="mt-3"></div>
+
+<div id="remainEchoBox" style="display:none; margin-top:10px;">
+<label class="form-label">กระดุมติดที่มีอยู่ในไอดี</label>
+<input type="number" id="remainEcho" class="form-control" placeholder="เช่น 500">
+<button class="btn btn-primary mt-2" onclick="recalculateSkin()">คำนวณใหม่</button>
+</div>
+
+</div>      
+</div>
+    </div>
+  </div>
+</div>
+
+  <footer class="footer-credit">
+  💗 Sayluvyaa Topup • เติมเกม Echoes ราคาถูก  
+  <br>
+  © 2026 All Rights Reserved
+</footer>
+
+<script>
+  function formatNum(num){
+  return num.toLocaleString("en-US");
+}
+  
+  const echoTopup = { 66: 60, 203: 185, 335: 305, 759: 690 };
+  const prices = { 66: 30, 203: 90, 335: 145, 759: 290 };
+
+  function generateOptions(mode, target) {
+    let options = [];
+    let maxBig = 0;
+
+    if (mode === "budget") {
+      maxBig = Math.floor(target / prices[759]) + 5;
+    } else if (mode === "buttons") {
+      maxBig = Math.floor(target / 759) + 5;
+    } else if (mode === "topup") {
+      maxBig = Math.floor(target / echoTopup[759]) + 5;
+    }
+
+    for (let c66=0;c66<=2;c66++) {
+      for (let c203=0;c203<=2;c203++) {
+        for (let c335=0;c335<=1;c335++) {
+         let start = Math.max(0, maxBig - 20);
+let end = maxBig + 5;
+
+for (let c759 = start; c759 <= end; c759++) {
+   
+  // ❌ กันสูตรที่ 66, 203, 335 อยู่พร้อมกัน และมีตัวใดตัวหนึ่ง >=2
+if (
+  c66 > 0 &&
+  c203 > 0 &&
+  c335 > 0 &&
+  (c66 >= 2 || c203 >= 2 || c335 >= 2)
+) continue;
+  // ❌ กันสูตร 203x2 + 66x2
+if (c203 === 2 && c66 === 2) continue;
+
+  // ❌ กันสูตร 335x1 + 203x2
+if (c335 === 1 && c203 === 2) continue;
+           
+            let echoes = c66*66 + c203*203 + c335*335 + c759*759;
+            let topup = c66*echoTopup[66] + c203*echoTopup[203] + c335*echoTopup[335] + c759*echoTopup[759];
+
+            // ส่วนลดราคาพิเศษสำหรับแพ็กใหญ่
+            let price759 = prices[759];
+            if (c759 >= 20) {
+              price759 = 285;
+            } else if (c759 >= 10) {
+              price759 = 287;
+            }
+
+            let price = c66*prices[66] + c203*prices[203] + c335*prices[335] + c759*price759;
+
+            let desc = `${c759>0?`759x${c759} `:""}${c335>0?`335x${c335} `:""}${c203>0?`203x${c203} `:""}${c66>0?`66x${c66}`:""}`.trim();
+            if (!desc) continue;
+
+            if (mode==="buttons" && echoes>=target) options.push({desc,echoes,topup,price});
+            if (mode==="topup" && topup>=target) options.push({desc,echoes,topup,price});
+            if (mode==="budget") options.push({desc,echoes,topup,price});
+          }
+        }
+      }
+    }
+    return options;
+  }
+
+  function findBetterOption(options, best, maxExtra = 10){
+
+  let candidates = options.filter(o =>
+    o.price > best.price &&
+    o.price <= best.price + maxExtra &&
+    o.echoes > best.echoes
+  );
+
+  if(candidates.length === 0) return null;
+
+  // เลือกตัวที่คุ้มสุด (echoes ต่อบาท)
+  candidates.sort((a,b)=>
+    (b.echoes/b.price) - (a.echoes/a.price)
+  );
+
+  return candidates[0];
+}
+
+function calculateButtons() {
+  let needed = parseInt(document.getElementById("echoesInput").value);
+
+  if (isNaN(needed) || needed <= 0) {
+    document.getElementById("result").innerText = "กรุณากรอกจำนวนกระดุมที่ถูกต้อง";
+    return;
+  }
+
+  let options = generateOptions("buttons", needed).filter(o=>o.echoes>=needed);
+  options.sort((a,b)=>a.price-b.price);
+
+  let best = options[0];
+  let better = findBetterOption(options, best, 10);
+
+  let html = `
+  <p>💡 สูตรที่เลือก: ${best.desc}</p>
+  <p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+  <p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
+  <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+  `;
+
+  if(better){
+    html += `
+    <hr>
+    <p style="color:#ff4fa3;font-weight:600;">
+    🔥 เพิ่มเงินอีก ${better.price - best.price} บาท  
+    เพื่อได้ +${better.echoes - best.echoes} echoes
+    </p>
+
+    <p>✨ สูตรแนะนำ: ${better.desc}</p>
+    <p>🔴 รวมทั้งหมด: ${formatNum(better.echoes)} กระดุม</p>
+    <p>💸 ราคารวม: ${formatNum(better.price)} บาท</p>
+    <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(better.topup)}</p>
+    `;
+  }
+
+  document.getElementById("result").innerHTML = html;
+}
+
+function calculateTopup() {
+  let neededTopup = parseInt(document.getElementById("echoesInput").value);
+  if (isNaN(neededTopup) || neededTopup <= 0) {
+    document.getElementById("result").innerText = "กรุณากรอกยอดเติมเสียงสะท้อนที่ถูกต้อง";
+    return;
+  }
+
+  let options = generateOptions("topup", neededTopup)
+                  .filter(o=>o.topup>=neededTopup);
+
+  options.sort((a,b)=>a.price-b.price);
+
+  let best = options[0];
+
+  // 🔥 เพิ่มตรงนี้
+  let better = findBetterOption(options, best, 10);
+
+  let html = `
+  <p>💡 สูตรที่เลือก: ${best.desc}</p>
+  <p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+  <p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
+  <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+  `;
+
+  if(better){
+    let diffPrice = better.price - best.price;
+    let diffEcho = better.echoes - best.echoes;
+
+    html += `
+    <hr>
+    <p style="color:#ff4fa3;font-weight:600;">
+    🔥 เพิ่มเงินอีก ${diffPrice} บาท  
+    เพื่อได้ +${diffEcho} echoes
+    </p>
+
+    <p>✨ สูตรแนะนำ: ${better.desc}</p>
+    <p>🔴 รวมทั้งหมด: ${formatNum(better.echoes)} กระดุม</p>
+    <p>💸 ราคารวม: ${formatNum(better.price)} บาท</p>
+    <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(better.topup)}</p>
+    `;
+  }
+
+  document.getElementById("result").innerHTML = html;
+}
+  function calculateBudget() {
+    let budget = parseInt(document.getElementById("echoesInput").value);
+    if (isNaN(budget) || budget <= 0) {
+      document.getElementById("result").innerText = "กรุณากรอกงบประมาณที่ถูกต้อง";
+      return;
+    }
+    let options = generateOptions("budget", budget);
+
+    let lower = options
+.filter(o=>o.price < budget)
+.sort((a,b)=> 
+   b.price - a.price || b.echoes - a.echoes
+)[0];
+    
+    let equal = options
+.filter(o=>o.price === budget)
+.sort((a,b)=> b.echoes - a.echoes)[0];
+    
+    let higher = options
+.filter(o=>o.price > budget)
+.sort((a,b)=> 
+   a.price - b.price || b.echoes - a.echoes
+)[0];
+
+    let html = "<table class='table table-bordered'><thead><tr><th>ตัวเลือก</th><th>สูตร</th><th>ราคา</th><th>กระดุมรวม</th><th>ยอดเติมเสียงสะท้อน</th></tr></thead><tbody>";
+    if (lower) html += `<tr><td>ต่ำกว่า</td><td>${lower.desc}</td><td>${lower.price} บาท</td><td>${lower.echoes}</td><td>${lower.topup}</td></tr>`;
+    if (equal) html += `<tr><td>เท่ากับ</td><td>${equal.desc}</td><td>${equal.price} บาท</td><td>${equal.echoes}</td><td>${equal.topup}</td></tr>`;
+    if (higher) html += `<tr><td>สูงกว่า</td><td>${higher.desc}</td><td>${higher.price} บาท</td><td>${higher.echoes}</td><td>${higher.topup}</td></tr>`;
+    html += "</tbody></table>";
+    document.getElementById("result").innerHTML = html;
+  }
+
+function calculateGacha() {
+
+  let specialPack = parseInt(document.getElementById("specialPack").value) || 0;
+  let normalBalls = parseInt(document.getElementById("normalBalls").value) || 0;
+
+  // Echoes ที่ต้องใช้จริง
+  let echoesNeeded = (specialPack * 576) + (normalBalls * 96);
+
+  if (echoesNeeded <= 0) {
+    document.getElementById("result").innerText = "กรุณากรอกจำนวนที่ต้องการ";
+    return;
+  }
+
+  // ใช้ระบบเดียวกับโหมดกระดุม
+  let options = generateOptions("buttons", echoesNeeded)
+                  .filter(o => o.echoes >= echoesNeeded);
+
+  options.sort((a,b)=>a.price-b.price);
+
+  let best = options[0];
+
+  // 🔥 ตัวเลือกเพิ่มเงิน
+  let better = findBetterOption(options, best, 10);
+
+  let totalBalls = (specialPack * 10) + normalBalls;
+
+  let html = `
+  <p>💡 สูตรที่เลือก: ${best.desc}</p>
+  <p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+  <p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
+  <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+
+  <hr>
+
+  <p>จำนวนลูกกาชารวม: <strong>${totalBalls}</strong> ลูก</p>
+  `;
+
+  // 🔥 เพิ่ม option คุ้มกว่า
+  if(better){
+
+    let diffPrice = better.price - best.price;
+    let diffEcho = better.echoes - best.echoes;
+
+    html += `
+    <hr>
+
+    <p style="color:#ff4fa3;font-weight:600;">
+    🔥 เพิ่มเงินอีก ${diffPrice} บาท  
+    เพื่อได้ +${diffEcho} echoes
+    </p>
+
+    <p>✨ สูตรแนะนำ: ${better.desc}</p>
+    <p>🔴 รวมทั้งหมด: ${formatNum(better.echoes)} กระดุม</p>
+    <p>💸 ราคารวม: ${formatNum(better.price)} บาท</p>
+    <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(better.topup)}</p>
+    `;
+  }
+
+  document.getElementById("result").innerHTML = html;
+}
+  
+function calculate() {
+
+document.getElementById("resultBox").classList.add("show");
+
+let mode = document.getElementById("modeSelect").value;
+
+  if (mode === "buttons") calculateButtons();
+  else if (mode === "topup") calculateTopup();
+  else if (mode === "budget") calculateBudget();
+  else if (mode === "discount") calculateDiscount();
+  else if (mode === "gacha") calculateGacha();
+}
+
+// ราคาพรีออเดอร์ (ใช้เฉพาะโหมดส่วนลด)
+const preorderDiscount = {
+  66: { base: 30, "3%": 29, "10%": 27, topup: 60 },
+  203: { base: 90, "3%": 85, "10%": 79, topup: 185 },
+  335: { base: 145, "3%": 140, "10%": 130, topup: 305 },
+  759: { base: 285, "3%": 280, "10%": 260, topup: 690 },
+  2227: { base: null, "3%": 830, "10%": 770, topup: 2025 },
+  3663: { base: null, "3%": 1360, "10%": 1260, topup: 3330 },
+  7249: { base: null, "3%": 2720, "10%": 2550, topup: 6590 }
+};
+
+const discountPacks = [66,203,335,759,2227,3663,7249];
+const discountRates = ["ไม่ใช้ส่วนลด","3%","10%"];
+
+function createRow() {
+  let row = document.createElement("tr");
+
+  let packCell = document.createElement("td");
+  let packSelect = document.createElement("select");
+  packSelect.className = "form-select";
+
+  // เพิ่มตัวเลือกเริ่มต้น "เลือกแพ็ก" (สามารถเลือกกลับได้)
+  let defaultOpt = document.createElement("option");
+  defaultOpt.value = "";
+  defaultOpt.textContent = "เลือกแพ็ก";
+  defaultOpt.selected = true;
+  defaultOpt.disabled = false;   // ✅ ให้เลือกกลับได้
+  packSelect.appendChild(defaultOpt);
+
+  discountPacks.forEach(p=>{
+    let opt = document.createElement("option");
+    opt.value = p;
+    opt.textContent = p;
+    packSelect.appendChild(opt);
+  });
+  packCell.appendChild(packSelect);
+
+  let rateCell = document.createElement("td");
+  let rateSelect = document.createElement("select");
+  rateSelect.className = "form-select";
+  discountRates.forEach(r=>{
+    let opt = document.createElement("option");
+    opt.value = r;
+    opt.textContent = r;
+    rateSelect.appendChild(opt);
+  });
+  rateCell.appendChild(rateSelect);
+
+  row.appendChild(packCell);
+  row.appendChild(rateCell);
+  return row;
+}
+
+function addDiscountRow() {
+  document.getElementById("discountRows").appendChild(createRow());
+}
+
+// สร้าง 5 แถวเริ่มต้น
+for (let i=0;i<5;i++) addDiscountRow();
+
+// ฟังก์ชันคำนวณโหมดส่วนลด (ใช้เฉพาะ preorderDiscount)
+function calculateDiscount() {
+  let rows = document.querySelectorAll("#discountRows tr");
+  let results = [];
+
+  rows.forEach(r=>{
+    let pack = r.children[0].querySelector("select").value;
+    if (!pack) return; // ข้ามถ้าไม่ได้เลือกแพ็กจริง
+    pack = parseInt(pack);
+
+    let rate = r.children[1].querySelector("select").value;
+    let data = preorderDiscount[pack];
+    if (!data) return;
+
+    let basePrice = data.base;
+    let discountPrice = basePrice;
+    if (rate==="3%") discountPrice = data["3%"];
+    if (rate==="10%") discountPrice = data["10%"];
+    if (rate==="ไม่ใช้ส่วนลด" && basePrice===null) return;
+
+    results.push({ pack, base: basePrice, discount: discountPrice, topup: data.topup });
+  });
+
+  let totalBase = results.reduce((sum,r)=>sum+(r.base||0),0);
+  let totalDiscount = results.reduce((sum,r)=>sum+(r.discount||0),0);
+  let totalEchoes = results.reduce((sum,r)=>sum+r.pack,0);
+  let totalTopup = results.reduce((sum,r)=>sum+r.topup,0);
+
+  let html = "<table class='table table-bordered'><thead><tr><th>แพ็ก</th><th>ราคาปกติ</th><th>ราคาหลังส่วนลด</th><th>ยอดเติม</th></tr></thead><tbody>";
+  results.forEach(r=>{
+    html += `<tr>
+      <td>${r.pack}</td>
+      <td>${r.base!==null ? r.base : "-"}</td>
+      <td>${r.discount}</td>
+      <td>${r.topup}</td>
+    </tr>`;
+  });
+  html += `<tr>
+    <td>รวม</td>
+    <td>${totalBase}</td>
+    <td>${totalDiscount}</td>
+    <td>${totalTopup}</td>
+  </tr>`;
+  html += "</tbody></table>";
+
+  html += `<p>สูตรการเติมที่ใช้: ${results.map(r=>r.pack+"x1").join(", ")}</p>`;
+  html += `<p>รวมทั้งหมด: ${totalEchoes} กระดุม</p>`;
+  html += `<p>ราคารวม: ${totalDiscount} บาท</p>`;
+  html += `<p>ยอดเติมเสียงสะท้อนรวม: ${totalTopup}</p>`;
+
+  document.getElementById("result").innerHTML = html;
+}
+  document.getElementById("modeSelect").addEventListener("change", function() {
+
+  document.getElementById("discountTable").style.display = "none";
+  document.getElementById("generalInput").style.display = "none";
+  document.getElementById("gachaInput").style.display = "none";
+
+  if (this.value === "discount") {
+    document.getElementById("discountTable").style.display = "block";
+  } 
+  else if (this.value === "gacha") {
+    document.getElementById("gachaInput").style.display = "block";
+  } 
+  else {
+    document.getElementById("generalInput").style.display = "block";
+  }
+});
+
+function toggleDarkMode(){
+  document.body.classList.toggle("dark-mode");
+
+  let btn = document.querySelector(".dark-toggle");
+
+  if(document.body.classList.contains("dark-mode")){
+    btn.innerHTML = "☀️";
+    localStorage.setItem("theme","dark");
+  }else{
+    btn.innerHTML = "🌙";
+    localStorage.setItem("theme","light");
+  }
+}
+
+// โหลดโหมดที่เคยใช้
+
+ function calculateSkinWish(){
+
+let skins = document.querySelectorAll(".skin-data");
+
+let totalEchoes=0;
+let labels=[];
+
+skins.forEach(s=>{
+
+let qty = parseInt(
+s.previousElementSibling.querySelector(".qty").innerText
+);
+
+if(qty>0){
+
+let echo = parseInt(s.dataset.echo);
+let label = s.dataset.label;
+
+totalEchoes += echo*qty;
+
+labels.push(`${label} x${qty}`);
+
+}
+
+});
+
+if(totalEchoes===0){
+document.getElementById("skinResult").innerText="กรุณาเลือกสกิน";
+return;
+}
+document.getElementById("remainEchoBox").style.display="block";
+
+let options = generateOptions("buttons", totalEchoes)
+                .filter(o=>o.echoes>=totalEchoes);
+
+options.sort((a,b)=>a.price-b.price);
+
+let best = options[0];
+let better = findBetterOption(options, best, 10);
+
+document.getElementById("skinResult").innerHTML=`
+
+<div>
+
+<p><strong>Skin ที่เลือก</strong></p>
+
+${labels.map(l=>`<span class="badge bg-danger">${l}</span>`).join(" ")}
+
+<hr>
+
+<p>กระดุมที่ต้องใช้รวม: ${formatNum(totalEchoes)}</p>
+<p>สูตรเติมคุ้มสุด: ${best.desc}</p>
+<p>รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+<p>ราคารวม: ${formatNum(best.price)} บาท</p>
+<p>ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+<p class="price-note">
+*เป็นเพียงราคาคาดการณ์ ในอนาคตอาจมีเปลี่ยนแปลง*
+</p>
+
+</div>
+`;
+}
+
+function recalculateSkin(){
+
+  let remain = parseInt(document.getElementById("remainEcho").value) || 0;
+
+  let skins = document.querySelectorAll(".skin-data");
+
+  let totalEchoes = 0;
+  let labels = [];
+
+  skins.forEach(s=>{
+    let qty = parseInt(
+      s.previousElementSibling.querySelector(".qty").innerText
+    );
+
+    if(qty>0){
+      let echo = parseInt(s.dataset.echo);
+      let label = s.dataset.label;
+
+      totalEchoes += echo * qty;
+      labels.push(`${label} x${qty}`);
+    }
+  });
+
+  let needEchoes = totalEchoes - remain;
+  if(needEchoes < 0) needEchoes = 0;
+
+  let options = generateOptions("buttons", needEchoes)
+    .filter(o=>o.echoes>=needEchoes);
+
+  options.sort((a,b)=>a.price-b.price);
+
+  let best = options[0];
+
+  if(!best){
+    document.getElementById("skinResult").innerText = "ไม่ต้องเติมเพิ่ม";
+    return;
+  }
+
+let html = `
+<div>
+
+<p><strong>Skin ที่เลือก</strong></p>
+${labels.map(l=>`<span class="badge bg-danger">${l}</span>`).join(" ")}
+
+<hr>
+
+<p>สูตรเติมคุ้มสุด: ${best.desc}</p>
+<p>รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+<p>ราคารวม: ${formatNum(best.price)} บาท</p>
+<p>ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+
+<p class="price-note">
+*เป็นเพียงราคาคาดการณ์ ในอนาคตอาจมีเปลี่ยนแปลง*
+</p>
+
+</div>
+`;;
+
+  html += `</div>`;
+
+  document.getElementById("skinResult").innerHTML = html;
+}
+
+function changeQty(btn,delta){
+
+let qtyEl = btn.parentElement.querySelector(".qty");
+
+let qty = parseInt(qtyEl.innerText);
+
+qty += delta;
+
+if(qty<0) qty=0;
+
+qtyEl.innerText=qty;
+
+}
+
+  function resetSkin(){
+
+document.querySelectorAll(".qty").forEach(q=>{
+q.innerText = 0;
+});
+
+document.getElementById("skinResult").innerHTML="";
+
+}
+
+    const skins = [
+
+{name:"Skin S", echo:2888, img:"skins.png"},
+{name:"Skin S ลด 40%", echo:1733, img:"skins.png"},
+{name:"Skin S ลด 50%", echo:1444, img:"skins.png"},
+{name:"Skin S ลด 388🔴", echo:2500, img:"skins.png"},
+{name:"Skin S ลด 25%", echo:2158, img:"skins.png"},
+{name:"Skin S + Acces A + Character", echo:3288, img:"skins-accesa+cha.png"},
+{name:"Skin S + Acces S", echo:3268, img:"skins-access.png"},
+{name:"Skin S ลด 40% + Acces S", echo:3025, img:"skins-access.png"},
+{name:"Skin S + Acces A", echo:2688, img:"skins-accesa.png"},
+{name:"Skin S ลด 40% + Acces A", echo:2459, img:"skins-accesa.png"},
+{name:"Skin S ซื้อประดับ S/A แล้ว", echo:1963, img:"skins.png"},
+    
+{name:"Skin A", echo:1388, img:"skina.png"},
+{name:"Skin A ลด 40%", echo:833, img:"skina.png"},
+{name:"Skin A ลด 50%", echo:694, img:"skina.png"},
+{name:"Skin A ลด 388🔴", echo:1000, img:"skina.png"},
+{name:"Skin A 688🔴", echo:688, img:"skina.png"},
+{name:"Skin A ลด 15%", echo:1178, img:"skina.png"},
+{name:"Skin A COA Team", echo:1108, img:"skina.png"},
+{name:"Skin A 988echoes ", echo:988, img:"skina.png"},
+{name:"Skin A + Acces S", echo:2618, img:"skina-access.png"},
+{name:"Skin A ลด 40% + Acces S", echo:2342, img:"skina-access.png"},
+{name:"Skin A + Acces A", echo:1968, img:"skina-accesa.png"},
+{name:"Skin A ลด 40% + Acces A", echo:1685, img:"skina-accesa.png"},
+{name:"Skin A ซื้อประดับ S/A แล้ว", echo:1110, img:"skina.png"},
+
+{name:"Skin B", echo:318, img:"skinb.png"},
+{name:"Skin B", echo:288, img:"skinb.png"},
+{name:"Skin B Ivory Tower", echo:60, img:"skinb.png"},
+{name:"Skin C", echo:108, img:"skinb.png"},
+    
+{name:"Accessory S", echo:1888, img:"access.png"},
+{name:"Accessory A", echo:1068, img:"accesa.png"},
+{name:"Accessory A", echo:788, img:"accesa.png"},
+{name:"Accessory B", echo:258, img:"accesb.png"},
+{name:"Accessory B", echo:208, img:"accesb.png"},
+{name:"Acces S ซื้อสกิน S แล้ว", echo:1292, img:"access.png"},
+{name:"Acces A ซื้อสกิน S แล้ว", echo:726, img:"accesa.png"},
+{name:"Acces S ซื้อสกิน A แล้ว", echo:1509, img:"access.png"},
+{name:"Acces A ซื้อสกิน A แล้ว", echo:852, img:"accesa.png"},
+  
+{name:"Pet A", echo:888, img:"peta.png"},
+{name:"Pet A", echo:788, img:"peta.png"},
+{name:"Pet A", echo:710, img:"peta.png"},
+
+{name:"Pet B", echo:488, img:"petb.png"},
+{name:"Pet B", echo:388, img:"petb.png"},
+{name:"Pet B", echo:288, img:"petb.png"},
+{name:"Pet C", echo:158, img:"petb.png"},
+
+{name:"Room S", echo:4888, img:"rooms.png"},
+{name:"Room S ลด 20%", echo:3912, img:"rooms.png"},
+{name:"Room S ลด 25%", echo:3688, img:"rooms.png"},
+{name:"Room A", echo:3288, img:"rooma.png"},
+{name:"Room B", echo:968, img:"roomb.png"},
+];
+  
+function loadSkins(){
+  let gallery = document.getElementById("skinGallery");
+  gallery.innerHTML = ""; // ✅ เคลียร์ก่อน
+
+  skins.forEach(skin=>{
+
+gallery.innerHTML += `
+
+<div class="skin-card" data-match="true">
+
+<img src="${skin.img}">
+
+<div class="skin-info">
+<div class="skin-name">${skin.name}</div>
+<div class="skin-price">${skin.echo} Echoes</div>
+</div>
+
+<div class="skin-qty">
+<button onclick="changeQty(this,-1)">−</button>
+<span class="qty">0</span>
+<button onclick="changeQty(this,1)">+</button>
+</div>
+
+<div class="skin-data"
+data-echo="${skin.echo}"
+data-label="${skin.name}">
+</div>
+
+</div>
+
+`;
+});
+
+}
+
+window.onload = function(){
+
+let theme = localStorage.getItem("theme");
+let btn = document.querySelector(".dark-toggle");
+
+if(theme === "dark"){
+  document.body.classList.add("dark-mode");
+  if(btn) btn.innerHTML="☀️";
+}
+
+loadSkins();
+showPage(1);
+};
+  
+ function scrollToSkinResult(){
+  setTimeout(()=>{
+    document.getElementById("skinResult")
+    .scrollIntoView({behavior:"smooth"});
+  },300); // เพิ่ม delay นิด
+}
+  
+ function searchSkin(){
+
+let keyword = document.getElementById("skinSearch").value.toLowerCase();
+
+let skins = document.querySelectorAll(".skin-card");
+
+skins.forEach(function(card){
+
+let name = card.querySelector(".skin-name").innerText.toLowerCase();
+
+if(name.includes(keyword)){
+card.dataset.match = "true";
+}else{
+card.dataset.match = "false";
+}
+
+});
+
+showPage(1);
+
+}
+
+function scrollToTop(){
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+}
+  
+window.addEventListener("scroll", function(){
+const btn = document.querySelector(".top-btn");
+
+if(window.scrollY > 200){
+btn.classList.add("show");
+}else{
+btn.classList.remove("show");
+}
+});
+
+  // ===== Pagination Skin Gallery =====
+
+let currentPage = 1;
+let skinsPerPage = 10;
+
+function showPage(page){
+
+let skins = Array.from(document.querySelectorAll(".skin-card"))
+.filter(s => s.dataset.match !== "false");
+
+let totalPages = Math.ceil(skins.length / skinsPerPage);
+
+if(page < 1) page = 1;
+if(page > totalPages) page = totalPages;
+
+currentPage = page;
+
+document.querySelectorAll(".skin-card").forEach(s=>s.style.display="none");
+
+skins.forEach((skin,index)=>{
+
+let start = (page-1)*skinsPerPage;
+let end = start + skinsPerPage;
+
+if(index >= start && index < end){
+skin.style.display="flex";
+}
+
+});
+
+renderPageNumbers(totalPages);
+}
+
+function renderPageNumbers(totalPages){
+
+let container = document.getElementById("pageNumbers");
+container.innerHTML="";
+
+for(let i=1;i<=totalPages;i++){
+
+let btn=document.createElement("button");
+
+btn.innerText=i;
+
+if(i===currentPage){
+btn.classList.add("active");
+}
+
+btn.onclick=()=>showPage(i);
+
+container.appendChild(btn);
+
+}
+
+}
+
+function changePage(step){
+showPage(currentPage + step);
+}
+
+  
+</script>
+
+<button class="dark-toggle" onclick="toggleDarkMode()">🌙</button>
+  
+<button class="top-btn" onclick="scrollToTop()">⬆️</button>
+
+<div class="floating-menu">
+
+<a href="#" onclick="calculateSkinWish();scrollToSkinResult();return false;">
+✨ คำนวณ Skin Gallery
+</a>
+
+<a href="https://www.facebook.com/share/1CEyAyv53R/?mibextid=wwXIfr"
+target="_blank">
+💬 ติดต่อสั่งเติมกับร้าน
+</a>
+
+</div>
+  
+</body>
+</html>
